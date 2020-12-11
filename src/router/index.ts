@@ -5,12 +5,22 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'Home',
-    component: () => import(/* webpackChunkName: "home" */ '../views/Home.vue')
+    component: () => import(/* webpackChunkName: "home" */ '@/views/Home.vue')
   },
   {
-    path: '/about',
-    name: 'About',
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    path: '/login',
+    name: 'Login',
+    component: () => import(/* webpackChunkName: "login" */ '@/views/Login.vue')
+  },
+  {
+    path: '/videoCall',
+    name: 'VideoCall',
+    component: () => import(/* webpackChunkName: "videoCall" */ '@/views/VideoCall.vue')
+  },
+  {
+    path: '/audioCall',
+    name: 'AudioCall',
+    component: () => import(/* webpackChunkName: "audioCall" */ '@/views/AudioCall.vue')
   }
 ]
 

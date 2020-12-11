@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-"@ant-design-vue/use@^0.0.1-0":
+"@ant-design-vue/use@^0.0.1-0", "@ant-design-vue/use@^0.0.1-alpha.8":
   version "0.0.1-alpha.8"
   resolved "https://registry.npm.taobao.org/@ant-design-vue/use/download/@ant-design-vue/use-0.0.1-alpha.8.tgz#7fd8a1b8a095377fdb50cc20e1fc2f68145e49c4"
   integrity sha1-f9ihuKCVN3/bUMwg4fwvaBReScQ=

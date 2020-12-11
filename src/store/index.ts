@@ -1,11 +1,20 @@
 import type { App } from 'vue'
-import { createStore } from 'vuex'
+import { createStore, createLogger } from 'vuex'
+import { NODE_ENV } from '@/utils/constants'
+import state from '@/store/state'
+import * as getters from '@/store/getters'
+import * as actions from '@/store/actions'
+import mutations from '@/store/mutations'
+
+// 调试工具，开发环境使用，线上关闭
+const debug = NODE_ENV !== 'production'
 
 const store = createStore({
-  state: {},
-  mutations: {},
-  actions: {},
-  modules: {}
+  state,
+  mutations,
+  getters,
+  actions,
+  plugins: debug ? [createLogger()] : []
 })
 
 /**
