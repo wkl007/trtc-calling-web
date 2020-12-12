@@ -3,12 +3,27 @@
     <div class="form-wrapper">
       <a-form
         layout="horizontal"
-        :rules="rules"
         :wrapper-col="wrapperCol"
         :model="form"
         ref="loginForm"
         @submit="handleSubmit"
       >
+        <a-form-item v-bind="validateInfos.sdkAppId">
+          <a-input
+            v-bind="inputProps"
+            placeholder="SDKAppID"
+            size="large"
+            v-model:value="form.sdkAppId"
+          />
+        </a-form-item>
+        <a-form-item v-bind="validateInfos.secretKey">
+          <a-input
+            v-bind="inputProps"
+            placeholder="加密秘钥"
+            size="large"
+            v-model:value="form.secretKey"
+          />
+        </a-form-item>
         <a-form-item v-bind="validateInfos.username">
           <a-input
             v-bind="inputProps"
@@ -16,6 +31,11 @@
             size="large"
             v-model:value="form.username"
           />
+        </a-form-item>
+        <a-form-item>
+          <a-checkbox v-model:checked="form.cache">
+            保存SDKAppID与加密秘钥
+          </a-checkbox>
         </a-form-item>
         <a-button
           type="primary"
@@ -31,19 +51,37 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRaw } from 'vue'
+import { defineComponent, onBeforeMount, reactive } from 'vue'
+import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { useForm } from '@ant-design-vue/use'
-import { INPUT_PROPS } from '@/utils/constants'
+import { INPUT_PROPS, SDK_INFO } from '@/utils/constants'
+import { loadStorage, saveStorage } from '@/utils/cache'
 
 export default defineComponent({
   name: 'Login',
   setup () {
-    const inputProps = reactive(INPUT_PROPS)
+    const router = useRouter()
+    const store = useStore()
     const form = reactive({
-      username: ''
+      sdkAppId: '',
+      secretKey: '',
+      username: '',
+      cache: true
     })
     const rules = reactive({
+      sdkAppId: [
+        {
+          required: true,
+          message: '请输入腾讯云SDKAppId'
+        }
+      ],
+      secretKey: [
+        {
+          required: true,
+          message: '请输入腾讯云加密密钥'
+        }
+      ],
       username: [
         {
           required: true,
@@ -51,34 +89,35 @@ export default defineComponent({
         }
       ]
     })
-    const {
-      resetFields,
-      validate,
-      validateInfos
-    } = useForm(form, rules)
+    const { validate, validateInfos } = useForm(form, rules)
 
-    async function handleSubmit (e: any) {
+    // 获取缓存信息
+    function getCacheSdk (): void {
+      const res = loadStorage(SDK_INFO, { sdkAppId: '', secretKey: '' })
+      res?.sdkAppId && (form.sdkAppId = res.sdkAppId)
+      res?.secretKey && (form.secretKey = res.secretKey)
+    }
+
+    // 提交
+    async function handleSubmit (): Promise<void> {
       try {
         await validate()
-        console.log(toRaw(form))
+        const { cache, sdkAppId, secretKey, username } = form
+        if (cache) saveStorage(SDK_INFO, { sdkAppId, secretKey })
+        // console.log(toRaw(form))
+        await store.dispatch('setLoginStatus', 1)
+        await store.dispatch('setUserInfo', { username })
+        await router.push({ path: '/' })
       } catch (err) {}
     }
 
-    /* function setLoginStatus (loginStatus: number) {
-      store.dispatch('setLoginStatus', loginStatus)
-    } */
+    onBeforeMount(() => {
+      getCacheSdk()
+    })
 
     return {
       wrapperCol: { span: 24 },
-      inputProps,
-      rules: {
-        username: [
-          {
-            required: true,
-            message: '请输入userId'
-          }
-        ]
-      },
+      inputProps: INPUT_PROPS,
       form,
       validateInfos,
       handleSubmit
@@ -91,6 +130,6 @@ export default defineComponent({
 .form-wrapper {
   width: 90%;
   max-width: 400px;
-  margin: 160px auto 0;
+  margin: 100px auto 0;
 }
 </style>

@@ -1,5 +1,5 @@
 import type { App } from 'vue'
-import { Button, Col, ConfigProvider, Dropdown, Form, Input, Layout, Menu, Row } from 'ant-design-vue'
+import { Button, Card, Checkbox, Col, ConfigProvider, Dropdown, Form, Input, Layout, Menu, Row } from 'ant-design-vue'
 
 /**
  * antd 按需加载配置
@@ -16,4 +16,6 @@ export function setupAntd (app: App<Element>): void {
     .use(Layout)
     .use(Form)
     .use(Input)
+    .use(Checkbox)
+    .use(Card)
 }

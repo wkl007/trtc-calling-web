@@ -3,7 +3,7 @@
     <div class="nav-container">
       <a-row v-bind="navLayout.Row">
         <a-col v-bind="navLayout.LeftCol">
-          <p class="title">
+          <p class="title" @click="goHome">
             Vue 3.0 TRTC实时音视频演示
           </p>
         </a-col>
@@ -11,7 +11,7 @@
           <div class="operation-wrapper">
             <a-dropdown>
               <div class="user-info">
-                {{ userInfo.username || '暂未登录' }}
+                {{ userInfo.username ? `欢迎您：${userInfo.username}` : '暂未登录' }}
               </div>
               <template #overlay>
                 <a-menu @click="handleMenuClick">
@@ -28,8 +28,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, reactive } from 'vue'
+import { computed, defineComponent, createVNode } from 'vue'
 import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
+import { Modal } from 'ant-design-vue'
+import { ExclamationCircleOutlined } from '@/utils/icons'
 
 const NAV_LAYOUT = {
   Row: {
@@ -56,26 +59,47 @@ const NAV_LAYOUT = {
 export default defineComponent({
   name: 'VNav',
   setup () {
+    const router = useRouter()
     const store = useStore()
-
     const userInfo = computed(() => store.getters.userInfo)
-    const navLayout = reactive(NAV_LAYOUT)
 
-    function handleMenuClick ({ key }: { key: string }) {
-      console.log(key)
+    // 菜单点击
+    function handleMenuClick ({ key }: { key: string }): void {
       switch (key) {
         case 'detect':
           window.open('https://trtc-1252463788.cos.ap-guangzhou.myqcloud.com/web/demo/env-detect/index.html')
           break
         case 'logout':
+          handleLogout()
           break
       }
     }
 
+    // 退出登录
+    function handleLogout (): void {
+      Modal.confirm({
+        title: '提示',
+        content: '确认要退出登录吗？',
+        icon: createVNode(ExclamationCircleOutlined),
+        onOk: () => {
+          store.dispatch('setLoginStatus', 0)
+          store.dispatch('setUserInfo', { username: '' })
+          router.push({ path: '/login' })
+        },
+        onCancel: () => {}
+      })
+    }
+
+    // 返回首页
+    function goHome (): void {
+      router.push({ path: '/' })
+    }
+
     return {
       userInfo,
-      navLayout,
-      handleMenuClick
+      navLayout: NAV_LAYOUT,
+      handleMenuClick,
+      goHome
     }
   }
 })
@@ -115,9 +139,11 @@ export default defineComponent({
       justify-content: flex-end;
 
       .user-info {
+        box-sizing: border-box;
         min-width: 80px;
         max-width: 200px;
         margin-right: 8px;
+        padding: 0 8px;
         text-align: center;
         cursor: pointer;
         transition: background-color 0.3s;
