@@ -1,6 +1,7 @@
 import TRTCCalling from 'trtc-calling-js'
 // @ts-ignore
 import * as LibGenerateTestUserSig from '../../public/js/lib-generate-test-usersig.min'
+import { message } from 'ant-design-vue'
 import store from '@/store'
 
 interface UseTRTC {
@@ -35,15 +36,15 @@ export function useTRTC (): UseTRTC {
     if (!trtcCalling) return
     trtcCalling.on(TRTCCalling.EVENT.ERROR, handleError)
     trtcCalling.on(TRTCCalling.EVENT.INVITED, handleInvited)
-    trtcCalling.on(TRTCCalling.EVENT.USER_ENTER, handleUserEnter)
+    trtcCalling.on(TRTCCalling.EVENT.USER_ENTER, (e: { userID: string }) => handleUserEnter(trtcCalling, e))
     trtcCalling.on(TRTCCalling.EVENT.USER_LEAVE, handleUserLeave)
     trtcCalling.on(TRTCCalling.EVENT.REJECT, handleEject)
     trtcCalling.on(TRTCCalling.EVENT.LINE_BUSY, handleLineBusy)
     trtcCalling.on(TRTCCalling.EVENT.CALLING_CANCEL, handleCallingCancel)
-    trtcCalling.on(TRTCCalling.EVENT.KICKED_OUT, handleKickedOut)
+    trtcCalling.on(TRTCCalling.EVENT.KICKED_OUT, handleKickedOut(trtcCalling))
     trtcCalling.on(TRTCCalling.EVENT.CALLING_TIMEOUT, handleCallingTimeout)
     trtcCalling.on(TRTCCalling.EVENT.NO_RESP, handleNoResp)
-    trtcCalling.on(TRTCCalling.EVENT.CALL_END, handleCallEnd)
+    trtcCalling.on(TRTCCalling.EVENT.CALL_END, handleCallEnd(trtcCalling))
     trtcCalling.on(TRTCCalling.EVENT.USER_VIDEO_AVAILABLE, handleUserVideoChange)
     trtcCalling.on(TRTCCalling.EVENT.USER_AUDIO_AVAILABLE, handleUserAudioChange)
   }
@@ -53,15 +54,15 @@ export function useTRTC (): UseTRTC {
     if (!trtcCalling) return
     trtcCalling.off(TRTCCalling.EVENT.ERROR, handleError)
     trtcCalling.off(TRTCCalling.EVENT.INVITED, handleInvited)
-    trtcCalling.off(TRTCCalling.EVENT.USER_ENTER, handleUserEnter)
+    trtcCalling.off(TRTCCalling.EVENT.USER_ENTER, (e: { userID: string }) => handleUserEnter(trtcCalling, e))
     trtcCalling.off(TRTCCalling.EVENT.USER_LEAVE, handleUserLeave)
     trtcCalling.off(TRTCCalling.EVENT.REJECT, handleEject)
     trtcCalling.off(TRTCCalling.EVENT.LINE_BUSY, handleLineBusy)
     trtcCalling.off(TRTCCalling.EVENT.CALLING_CANCEL, handleCallingCancel)
-    trtcCalling.off(TRTCCalling.EVENT.KICKED_OUT, handleKickedOut)
+    trtcCalling.off(TRTCCalling.EVENT.KICKED_OUT, handleKickedOut(trtcCalling))
     trtcCalling.off(TRTCCalling.EVENT.CALLING_TIMEOUT, handleCallingTimeout)
     trtcCalling.off(TRTCCalling.EVENT.NO_RESP, handleNoResp)
-    trtcCalling.off(TRTCCalling.EVENT.CALL_END, handleCallEnd)
+    trtcCalling.off(TRTCCalling.EVENT.CALL_END, handleCallEnd(trtcCalling))
     trtcCalling.off(TRTCCalling.EVENT.USER_VIDEO_AVAILABLE, handleUserVideoChange)
     trtcCalling.off(TRTCCalling.EVENT.USER_AUDIO_AVAILABLE, handleUserAudioChange)
   }
@@ -75,33 +76,81 @@ export function useTRTC (): UseTRTC {
     })
   }
 
+  // 退出登录
+  function handleLogout (trtcCalling: any) {
+    trtcCalling.logout()
+  }
+
   function handleError (err: any) {
     console.log(err)
   }
 
+  // 被邀用户收到了邀请通知
   function handleInvited () {}
 
-  function handleUserEnter () {}
+  // 用户进入通话
+  function handleUserEnter (trtcCalling: any, { userID }: { userID: string }) {}
 
+  // 用户离开会话
   function handleUserLeave () {}
 
-  function handleEject () {}
+  // 被邀用户拒绝通话
+  function handleEject ({ userID }: { userID: string }) {
+    console.log('被邀用户拒绝通话')
+    message.info(`${userID}拒绝通话`)
+    dissolveMeeting()
+  }
 
-  function handleLineBusy () {}
+  // 被邀用户正在通话中，忙线
+  function handleLineBusy ({ userID }: { userID: string }) {
+    console.log('被邀用户正在通话中，忙线')
+    message.info(`${userID}忙线`)
+    dissolveMeeting()
+  }
 
-  function handleCallingCancel () {}
+  // 本次通话被取消了
+  function handleCallingCancel () {
+    console.log('本次通话被取消了')
+    message.info('通话已取消')
+    dissolveMeeting()
+  }
 
-  function handleKickedOut () {}
+  // 重复登录，被踢出
+  function handleKickedOut (trtcCalling: any) {
+    console.log('重复登录，被踢出')
+    handleLogout(trtcCalling)
+  }
 
-  function handleCallingTimeout () {}
+  // 本次通话超时未应答
+  function handleCallingTimeout () {
+    console.log('本次通话超时未应答')
+    message.info('通话超时未应答')
+    dissolveMeeting()
+  }
 
-  function handleNoResp () {}
+  // 被邀用户超时无应答
+  function handleNoResp ({ userID }: { userID: string }) {
+    console.log('被邀用户超时无应答')
+    message.info(`${userID}无应答`)
+    dissolveMeeting()
+  }
 
-  function handleCallEnd () {}
+  // 本次通话结束
+  function handleCallEnd (trtcCalling: any) {
+    console.log('通话已结束')
+    message.info('通话已结束')
+    trtcCalling.hangup()
+    dissolveMeeting()
+  }
 
   function handleUserVideoChange () {}
 
   function handleUserAudioChange () {}
+
+  // 解散会议
+  function dissolveMeeting () {
+
+  }
 
   return {
     getUserSig,

@@ -27,7 +27,6 @@ export default defineComponent({
     const trtcCalling = computed(() => store.getters.trtcCalling)
 
     watch(loginStatus, (val, oldVal) => {
-      console.log(toRaw(trtcCalling.value))
       if (val) {
         // 登录成功监听
         initListener(toRaw(trtcCalling.value))
