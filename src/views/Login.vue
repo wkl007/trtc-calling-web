@@ -5,7 +5,6 @@
         layout="horizontal"
         :wrapper-col="wrapperCol"
         :model="form"
-        ref="loginForm"
         @submit="handleSubmit"
       >
         <a-form-item v-bind="validateInfos.sdkAppId">
@@ -56,11 +55,15 @@ import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { useForm } from '@ant-design-vue/use'
 import { INPUT_PROPS, SDK_INFO } from '@/utils/constants'
-import { loadStorage, saveStorage } from '@/utils/cache'
+import { saveStorage } from '@/utils/cache'
+import { useTRTC } from '@/hooks'
+
+let trtcCalling: any
 
 export default defineComponent({
   name: 'Login',
   setup () {
+    const { initTRTC, handleLogin } = useTRTC()
     const router = useRouter()
     const store = useStore()
     const form = reactive({
@@ -93,9 +96,9 @@ export default defineComponent({
 
     // 获取缓存信息
     function getCacheSdk (): void {
-      const res = loadStorage(SDK_INFO, { sdkAppId: '', secretKey: '' })
-      res?.sdkAppId && (form.sdkAppId = res.sdkAppId)
-      res?.secretKey && (form.secretKey = res.secretKey)
+      const { sdkInfo: { sdkAppId, secretKey } } = store.getters
+      sdkAppId && (form.sdkAppId = sdkAppId)
+      secretKey && (form.secretKey = secretKey)
     }
 
     // 提交
@@ -105,9 +108,13 @@ export default defineComponent({
         const { cache, sdkAppId, secretKey, username } = form
         if (cache) saveStorage(SDK_INFO, { sdkAppId, secretKey })
         // console.log(toRaw(form))
-        await store.dispatch('setLoginStatus', 1)
         await store.dispatch('setUserInfo', { username })
+        await store.dispatch('setSdkInfo', { sdkAppId, secretKey })
+        const trtcCalling = initTRTC()
+        await store.dispatch('setTrtcCalling', trtcCalling)
+        await store.dispatch('setLoginStatus', 1)
         await router.push({ path: '/' })
+        handleLogin(trtcCalling)
       } catch (err) {}
     }
 

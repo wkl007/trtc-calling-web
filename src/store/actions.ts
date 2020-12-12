@@ -1,5 +1,5 @@
 import type { Commit } from 'vuex'
-import type { State, TrtcInfo, UserInfo } from '@/types'
+import type { SdkInfo, State, TrtcInfo, UserInfo } from '@/types'
 import * as types from '@/store/mutationTypes'
 
 export interface CommitFunction {
@@ -29,10 +29,29 @@ export function setUserInfo ({ commit }: CommitFunction, userInfo: UserInfo): vo
 }
 
 /**
+ * 设置trtc实例
+ * @param commit
+ * @param trtcCalling
+ */
+export function setTrtcCalling ({ commit }: CommitFunction, trtcCalling: any): void {
+  commit(types.SET_TRTC_CALL, trtcCalling)
+}
+
+/**
  * 设置trtc信息
  * @param commit
  * @param trtcInfo
  */
 export function setTrtcInfo ({ commit }: CommitFunction, trtcInfo: TrtcInfo): void {
   commit(types.SET_TRTC_INFO, trtcInfo)
+}
+
+/**
+ * 设置sdk信息
+ * @param commit
+ * @param sdkInfo
+ * @param cache
+ */
+export function setSdkInfo ({ commit }: CommitFunction, sdkInfo: SdkInfo): void {
+  commit(types.SET_SDK_INFO, sdkInfo)
 }

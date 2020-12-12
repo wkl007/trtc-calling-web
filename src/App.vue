@@ -8,10 +8,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, provide, reactive } from 'vue'
+import { computed, defineComponent, provide, reactive, watch, toRaw } from 'vue'
+import { useStore } from 'vuex'
 import zhCN from 'ant-design-vue/es/locale/zh_CN'
 import VNav from '@/components/VNav.vue'
 import images from '@/assets/images'
+import { useTRTC } from '@/hooks'
 
 export default defineComponent({
   name: 'App',
@@ -19,6 +21,22 @@ export default defineComponent({
     VNav
   },
   setup () {
+    const { initListener, removeListener } = useTRTC()
+    const store = useStore()
+    const loginStatus = computed(() => store.getters.loginStatus)
+    const trtcCalling = computed(() => store.getters.trtcCalling)
+
+    watch(loginStatus, (val, oldVal) => {
+      console.log(toRaw(trtcCalling.value))
+      if (val) {
+        // 登录成功监听
+        initListener(toRaw(trtcCalling.value))
+      } else {
+        // 取消登录移除监听
+        removeListener(toRaw(trtcCalling.value))
+      }
+    })
+
     provide('images', reactive(images))
     return {
       locale: reactive(zhCN)

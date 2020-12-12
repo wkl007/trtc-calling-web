@@ -10755,6 +10755,11 @@ thunky@^1.0.2:
   resolved "https://registry.npm.taobao.org/thunky/download/thunky-1.1.0.tgz#5abaf714a9405db0504732bbccd2cedd9ef9537d"
   integrity sha1-Wrr3FKlAXbBQRzK7zNLO3Z75U30=
 
+tim-js-sdk@^2.8.5:
+  version "2.8.5"
+  resolved "https://registry.npm.taobao.org/tim-js-sdk/download/tim-js-sdk-2.8.5.tgz?cache=0&sync_timestamp=1606114073959&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Ftim-js-sdk%2Fdownload%2Ftim-js-sdk-2.8.5.tgz#cbbb00626c7f42319b658e61e826218a803f93b3"
+  integrity sha1-y7sAYmx/QjGbZY5h6CYhioA/k7M=
+
 timers-browserify@^2.0.4:
   version "2.0.12"
   resolved "https://registry.npm.taobao.org/timers-browserify/download/timers-browserify-2.0.12.tgz?cache=0&sync_timestamp=1603793718173&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Ftimers-browserify%2Fdownload%2Ftimers-browserify-2.0.12.tgz#44a45c11fbf407f34f97bccd1577c652361b00ee"
@@ -10864,6 +10869,16 @@ trough@^1.0.0:
   resolved "https://registry.npm.taobao.org/trough/download/trough-1.0.5.tgz#b8b639cefad7d0bb2abd37d433ff8293efa5f406"
   integrity sha1-uLY5zvrX0LsqvTfUM/+Ck++l9AY=
 
+trtc-calling-js@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.npm.taobao.org/trtc-calling-js/download/trtc-calling-js-0.6.0.tgz#7e121bb417a3ba097e72f4614f7174c2d4728f37"
+  integrity sha1-fhIbtBejugl+cvRhT3F0wtRyjzc=
+
+trtc-js-sdk@^4.7.1:
+  version "4.7.1"
+  resolved "https://registry.npm.taobao.org/trtc-js-sdk/download/trtc-js-sdk-4.7.1.tgz?cache=0&sync_timestamp=1606459337498&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Ftrtc-js-sdk%2Fdownload%2Ftrtc-js-sdk-4.7.1.tgz#879a05b6a5c76809dd5fa01cabb6652e8322b158"
+  integrity sha1-h5oFtqXHaAndX6Acq7ZlLoMisVg=
+
 tryer@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npm.taobao.org/tryer/download/tryer-1.0.1.tgz#f2c85406800b9b0f74c9f7465b81eaad241252f8"
@@ -10894,6 +10909,11 @@ tsconfig-paths@^3.9.0:
     json5 "^1.0.1"
     minimist "^1.2.0"
     strip-bom "^3.0.0"
+
+tsignaling@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.npm.taobao.org/tsignaling/download/tsignaling-0.3.0.tgz#1afa3c55106f4dd344f3909a51cfb0303f5c4270"
+  integrity sha1-Gvo8VRBvTdNE85CaUc+wMD9cQnA=
 
 tslib@^1.10.0, tslib@^1.8.0, tslib@^1.8.1, tslib@^1.9.0:
   version "1.14.1"

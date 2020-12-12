@@ -38,6 +38,10 @@
     "good-storage": "^1.1.1",
     "nprogress": "^0.2.0",
     "register-service-worker": "^1.7.1",
+    "tim-js-sdk": "^2.8.5",
+    "trtc-calling-js": "^0.6.0",
+    "trtc-js-sdk": "^4.7.1",
+    "tsignaling": "^0.3.0",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",
     "vuex": "^4.0.0-0"

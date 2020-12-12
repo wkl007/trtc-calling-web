@@ -10,8 +10,15 @@ export interface TrtcInfo {
   muteAudioUserIdList: Array<string>
 }
 
+export interface SdkInfo {
+  sdkAppId: string,
+  secretKey: string
+}
+
 export interface State {
   loginStatus: number,
   userInfo: UserInfo,
-  trtcInfo: TrtcInfo
+  trtcCalling: any,
+  trtcInfo: TrtcInfo,
+  sdkInfo: SdkInfo
 }

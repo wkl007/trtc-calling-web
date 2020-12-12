@@ -15,7 +15,7 @@ export function saveStorage<T> (key: string, value?: T): T | undefined {
  * @param key
  * @param defaultValue
  */
-export function loadStorage<T> (key: string, defaultValue?: T): T | undefined {
+export function loadStorage<T> (key: string, defaultValue?: T): T {
   return storage.get(key, defaultValue)
 }
 
@@ -42,7 +42,7 @@ export function saveSessionStorage<T> (key: string, value?: T): T | undefined {
  * @param key
  * @param defaultValue
  */
-export function loadSessionStorage<T> (key: string, defaultValue?: T): T | undefined {
+export function loadSessionStorage<T> (key: string, defaultValue?: T): T {
   return storage.session.get(key, defaultValue)
 }
 
