@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, provide, reactive, watch, toRaw } from 'vue'
+import { computed, defineComponent, provide, reactive, toRaw, watch } from 'vue'
 import { useStore } from 'vuex'
 import zhCN from 'ant-design-vue/es/locale/zh_CN'
 import VNav from '@/components/VNav.vue'

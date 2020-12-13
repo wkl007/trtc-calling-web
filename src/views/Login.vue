@@ -63,7 +63,7 @@ let trtcCalling: any
 export default defineComponent({
   name: 'Login',
   setup () {
-    const { initTRTC, handleLogin } = useTRTC()
+    const { initTRTC, handleLogin, initListener } = useTRTC()
     const router = useRouter()
     const store = useStore()
     const form = reactive({
@@ -115,7 +115,9 @@ export default defineComponent({
         await store.dispatch('setLoginStatus', 1)
         await router.push({ path: '/' })
         handleLogin(trtcCalling)
-      } catch (err) {}
+      } catch (err) {
+        console.log(err)
+      }
     }
 
     onBeforeMount(() => {

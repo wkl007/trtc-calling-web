@@ -19,10 +19,16 @@
           :id="`video-${item}`"
         >
           <div class="status-area">
-            <div class="video-status"></div>
-            <div class="audio-status"></div>
+            <div
+              class="video-status"
+              :style="{backgroundImage:`url(${isUserMute(trtcInfo.muteVideoUserIdList,item)?images.cameraOff:images.cameraOn})`}"
+            ></div>
+            <div
+              class="audio-status"
+              :style="{backgroundImage:`url(${isUserMute(trtcInfo.muteAudioUserIdList,item)?images.micOff:images.micOn})`}"
+            ></div>
           </div>
-          <div class="video-username">{{ userNameList[item] || item }}</div>
+          <div class="video-username">{{ item }}{{ item === userInfo.username ? '(本人)' : '' }}</div>
         </div>
       </div>
       <div class="operation-wrapper">
@@ -54,9 +60,20 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onBeforeMount, reactive, ref } from 'vue'
+import {
+  computed,
+  defineComponent,
+  inject,
+  nextTick,
+  reactive,
+  ref,
+  toRaw,
+  watch,
+  onMounted,
+  onBeforeUnmount
+} from 'vue'
 import { useStore } from 'vuex'
-import { useRouter } from 'vue-router'
+import TRTCCalling from 'trtc-calling-js'
 import CallForm from '@/components/CallForm.vue'
 
 export default defineComponent({
@@ -65,46 +82,153 @@ export default defineComponent({
     CallForm
   },
   setup () {
-    const router = useRouter()
     const store = useStore()
+    const images = inject('images')
     const trtcInfo = computed(() => store.getters.trtcInfo)
+    const userInfo = computed(() => store.getters.userInfo)
+    const trtcCalling: any = computed(() => store.getters.trtcCalling)
     const showVideoCall = ref(false) // 显示视频区域
     const isVideoOn = ref(true) // 视频状态
     const isAudioOn = ref(true) // 麦克风状态
-    const userNameList = reactive({})
 
-    function handleCallUser (values: { username: string }) {
-      console.log(values)
+    // 呼叫用户
+    async function handleCallUser (values: { username: string }) {
+      const trtcInfoData = trtcInfo.value
+      const { username } = userInfo.value
+      await toRaw(trtcCalling.value).call({
+        userID: values.username,
+        type: TRTCCalling.CALL_TYPE.VIDEO_CALL,
+        timeout: 60 // 60s
+      })
+      trtcInfoData.callStatus = 'calling'
+      trtcInfoData.isInviter = true
+      if (trtcInfoData.meetingUserIdList.indexOf(username) < 0) trtcInfoData.meetingUserIdList.push(username)
+      await store.dispatch('setTrtcInfo', trtcInfoData)
     }
 
-    function handleCancelCallUser () {
-      console.log('取消')
+    // 取消呼叫
+    async function handleCancelCallUser () {
+      const trtcInfoData = trtcInfo.value
+      await toRaw(trtcCalling.value).hangup()
+      trtcInfoData.callStatus = 'idle'
+      trtcInfoData.meetingUserIdList = []
+      trtcInfoData.muteVideoUserIdList = []
+      trtcInfoData.muteAudioUserIdList = []
+      await store.dispatch('setTrtcInfo', trtcInfoData)
+    }
+
+    // 开始会议
+    function startMeeting () {
+      const trtcInfoData = trtcInfo.value
+      const { username } = userInfo.value
+      // 多人通话
+      if (trtcInfoData.meetingUserIdList >= 3) {
+        const lastJoinUser = trtcInfoData.meetingUserIdList[trtcInfoData.meetingUserIdList.length - 1]
+        nextTick(() => {
+          toRaw(trtcCalling.value).startRemoteView({
+            userID: lastJoinUser,
+            videoViewDomID: `video-${lastJoinUser}`
+          })
+        })
+        return
+      }
+      showVideoCall.value = true
+      nextTick(() => {
+        toRaw(trtcCalling.value).startLocalView({
+          userID: username,
+          videoViewDomID: `video-${username}`
+        })
+        const otherParticipants = trtcInfoData.meetingUserIdList.filter((item: string) => item !== username)
+        otherParticipants.forEach((userID: string) => {
+          toRaw(trtcCalling.value).startRemoteView({
+            userID,
+            videoViewDomID: `video-${userID}`
+          })
+        })
+      })
+    }
+
+    // 挂断会议
+    async function handleHangup () {
+      const trtcInfoData = trtcInfo.value
+      await toRaw(trtcCalling.value).hangup()
+      showVideoCall.value = false
+      trtcInfoData.callStatus = 'idle'
+      await store.dispatch('setTrtcInfo', trtcInfoData)
     }
 
     // 打开/关闭摄像头
-    function toggleVideoStatus () {}
+    async function toggleVideoStatus () {
+      const trtcInfoData = trtcInfo.value
+      const { username } = userInfo.value
+      isVideoOn.value = !isVideoOn.value
+      if (isVideoOn.value) {
+        await toRaw(trtcCalling.value).openCamera()
+        trtcInfoData.muteVideoUserIdList = trtcInfoData.muteVideoUserIdList.filter((item: string) => item !== username)
+      } else {
+        await toRaw(trtcCalling.value).closeCamera()
+        trtcInfoData.muteVideoUserIdList.push(username)
+      }
+      await store.dispatch('setTrtcInfo', trtcInfoData)
+    }
 
     // 打开/关闭麦克风
-    function toggleAudioStatus () {}
+    async function toggleAudioStatus () {
+      const trtcInfoData = trtcInfo.value
+      const { username } = userInfo.value
+      isAudioOn.value = !isAudioOn.value
+      toRaw(trtcCalling.value).setMicMute(!isAudioOn.value)
+      if (isAudioOn.value) {
+        trtcInfoData.muteAudioUserIdList = trtcInfoData.muteAudioUserIdList.filter((item: string) => item !== username)
+      } else {
+        trtcInfoData.muteAudioUserIdList.push(username)
+      }
+      await store.dispatch('setTrtcInfo', trtcInfoData)
+    }
 
-    // 挂断会议
-    function handleHangup () {}
+    // 判断是否关闭媒体
+    function isUserMute (muteUserList: Array<string>, userId: string): boolean {
+      return muteUserList.indexOf(userId) !== -1
+    }
 
-    onBeforeMount(() => {
+    watch(() => trtcInfo.value.callStatus, (val, oldVal) => {
+      if (val !== oldVal && val === 'connected') {
+        startMeeting()
+      }
+    })
 
+    onMounted(() => {
+      const trtcInfoData = trtcInfo.value
+      console.log(trtcInfoData.callStatus, trtcInfoData.isInviter)
+      if (trtcInfoData.callStatus === 'connected' && !trtcInfoData.isInviter) {
+        startMeeting()
+      }
+    })
+
+    onBeforeUnmount(() => {
+      const trtcInfoData = trtcInfo.value
+      trtcInfoData.muteVideoUserIdList = []
+      trtcInfoData.muteAudioUserIdList = []
+      if (trtcInfoData.callStatus === 'connected') {
+        toRaw(trtcCalling.value).hangup()
+        trtcInfoData.callStatus = 'idle'
+      }
+      store.dispatch('setTrtcInfo', trtcInfoData)
     })
 
     return {
+      images,
       trtcInfo,
+      userInfo,
       showVideoCall,
       isVideoOn,
       isAudioOn,
-      userNameList,
       handleCallUser,
       handleCancelCallUser,
       toggleVideoStatus,
       toggleAudioStatus,
-      handleHangup
+      handleHangup,
+      isUserMute
     }
   }
 })
@@ -122,6 +246,7 @@ export default defineComponent({
   .video-area {
     .area-title {
       font-size: 16px;
+      text-align: center;
     }
 
     .video-list {
