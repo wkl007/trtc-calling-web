@@ -25,7 +25,7 @@
             disabled
             size="large"
           >
-            呼叫中
+            呼叫中...
           </a-button>
           <a-button
             size="large"
@@ -53,6 +53,7 @@ import { INPUT_PROPS } from '@/utils/constants'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { useForm } from '@ant-design-vue/use'
+import { message } from 'ant-design-vue'
 
 export default defineComponent({
   name: 'CallForm',
@@ -79,6 +80,10 @@ export default defineComponent({
     async function handleSubmit (): Promise<void> {
       try {
         await validate()
+        if (form.username === userInfo.value.username) {
+          message.error('不能输入当前登录userId')
+          return
+        }
         emit('submit', form)
       } catch (e) {}
     }
@@ -105,7 +110,8 @@ export default defineComponent({
 
 <style scoped lang="less">
 .call-form {
-  width: 400px;
+  width: 90%;
+  max-width: 400px;
   margin: 0 auto;
 }
 </style>

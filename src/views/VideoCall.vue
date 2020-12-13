@@ -60,18 +60,7 @@
 </template>
 
 <script lang="ts">
-import {
-  computed,
-  defineComponent,
-  inject,
-  nextTick,
-  reactive,
-  ref,
-  toRaw,
-  watch,
-  onMounted,
-  onBeforeUnmount
-} from 'vue'
+import { computed, defineComponent, inject, nextTick, onBeforeUnmount, onMounted, ref, toRaw, watch } from 'vue'
 import { useStore } from 'vuex'
 import TRTCCalling from 'trtc-calling-js'
 import CallForm from '@/components/CallForm.vue'
@@ -98,7 +87,7 @@ export default defineComponent({
       await toRaw(trtcCalling.value).call({
         userID: values.username,
         type: TRTCCalling.CALL_TYPE.VIDEO_CALL,
-        timeout: 60 // 60s
+        timeout: 30 // 超时30s
       })
       trtcInfoData.callStatus = 'calling'
       trtcInfoData.isInviter = true

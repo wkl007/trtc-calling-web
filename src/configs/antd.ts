@@ -11,7 +11,8 @@ import {
   Layout,
   Menu,
   Row,
-  Space
+  Space,
+  Tooltip
 } from 'ant-design-vue'
 
 /**
@@ -32,4 +33,5 @@ export function setupAntd (app: App<Element>): void {
     .use(Checkbox)
     .use(Card)
     .use(Space)
+    .use(Tooltip)
 }

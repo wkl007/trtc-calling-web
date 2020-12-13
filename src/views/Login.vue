@@ -13,7 +13,13 @@
             placeholder="SDKAppID"
             size="large"
             v-model:value="form.sdkAppId"
-          />
+          >
+            <template #suffix>
+              <a-tooltip title="请在腾讯云实时音视频控制台中查看您的SDKAppID">
+                <info-circle-outlined style="color: rgba(0, 0, 0, 0.45);"/>
+              </a-tooltip>
+            </template>
+          </a-input>
         </a-form-item>
         <a-form-item v-bind="validateInfos.secretKey">
           <a-input
@@ -21,15 +27,27 @@
             placeholder="加密秘钥"
             size="large"
             v-model:value="form.secretKey"
-          />
+          >
+            <template #suffix>
+              <a-tooltip title="请在腾讯云实时音视频控制台中查看您的加密秘钥">
+                <info-circle-outlined style="color: rgba(0, 0, 0, 0.45);"/>
+              </a-tooltip>
+            </template>
+          </a-input>
         </a-form-item>
         <a-form-item v-bind="validateInfos.username">
           <a-input
             v-bind="inputProps"
-            placeholder="请输入userId"
+            placeholder="userId"
             size="large"
             v-model:value="form.username"
-          />
+          >
+            <template #suffix>
+              <a-tooltip title="建议输入中文或数字">
+                <info-circle-outlined style="color: rgba(0, 0, 0, 0.45);"/>
+              </a-tooltip>
+            </template>
+          </a-input>
         </a-form-item>
         <a-form-item>
           <a-checkbox v-model:checked="form.cache">
@@ -56,14 +74,18 @@ import { useStore } from 'vuex'
 import { useForm } from '@ant-design-vue/use'
 import { INPUT_PROPS, SDK_INFO } from '@/utils/constants'
 import { saveStorage } from '@/utils/cache'
+import { InfoCircleOutlined } from '@/utils/icons'
 import { useTRTC } from '@/hooks'
 
 let trtcCalling: any
 
 export default defineComponent({
   name: 'Login',
+  components: {
+    InfoCircleOutlined
+  },
   setup () {
-    const { initTRTC, handleLogin, initListener } = useTRTC()
+    const { initTRTC, handleLogin } = useTRTC()
     const router = useRouter()
     const store = useStore()
     const form = reactive({
@@ -115,9 +137,7 @@ export default defineComponent({
         await store.dispatch('setLoginStatus', 1)
         await router.push({ path: '/' })
         handleLogin(trtcCalling)
-      } catch (err) {
-        console.log(err)
-      }
+      } catch (err) {}
     }
 
     onBeforeMount(() => {

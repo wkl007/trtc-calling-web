@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, createVNode } from 'vue'
+import { computed, defineComponent, createVNode, toRaw } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { Modal } from 'ant-design-vue'
@@ -62,6 +62,7 @@ export default defineComponent({
     const router = useRouter()
     const store = useStore()
     const userInfo = computed(() => store.getters.userInfo)
+    const trtcCalling: any = computed(() => store.getters.trtcCalling)
 
     // 菜单点击
     function handleMenuClick ({ key }: { key: string }): void {
@@ -84,6 +85,7 @@ export default defineComponent({
         onOk: () => {
           store.dispatch('setLoginStatus', 0)
           store.dispatch('setUserInfo', { username: '' })
+          toRaw(trtcCalling.value).logout()
           router.push({ path: '/login' })
         },
         onCancel: () => {}

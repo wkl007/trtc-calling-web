@@ -223,7 +223,7 @@ export function useTRTC (): UseTRTC {
   // 被邀用户超时无应答
   async function handleNoResp ({ userID }: { userID: string }) {
     console.log('被邀用户超时无应答')
-    message.info(`${userID}无应答`)
+    message.info(`${userID || '被邀用户'}无应答`)
     await dissolveMeeting()
   }
 

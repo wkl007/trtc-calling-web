@@ -1,5 +1,5 @@
 import type { App } from 'vue'
-import { createStore, createLogger } from 'vuex'
+import { createLogger, createStore } from 'vuex'
 import { NODE_ENV } from '@/utils/constants'
 import state from '@/store/state'
 import * as getters from '@/store/getters'
