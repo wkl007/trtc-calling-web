@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([["audioCall"],{ae89:function(e,n,a){"use strict";a.r(n);var o=a("7a23"),c={class:"audio-call"},t=Object(o.defineComponent)({name:"AudioCall"});t.render=function(e,n,a,t,i,l){return Object(o.openBlock)(),Object(o.createBlock)("div",c," 语音通话 ")},n.default=t}}]);

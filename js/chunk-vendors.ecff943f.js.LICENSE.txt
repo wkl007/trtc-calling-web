@@ -1,0 +1,25 @@
+/* NProgress, (c) 2013, 2014 Rico Sta. Cruz - http://ricostacruz.com/nprogress
+ * @license MIT */
+
+/*!
+  * vue-router v4.0.1
+  * (c) 2020 Eduardo San Martin Morote
+  * @license MIT
+  */
+
+/*!
+ * vuex v4.0.0-rc.2
+ * (c) 2020 Evan You
+ * @license MIT
+ */
+
+/**
+ * UUID.js - RFC-compliant UUID Generator for JavaScript
+ *
+ * @file
+ * @author  LiosK
+ * @version v4.2.5
+ * @license Apache License 2.0: Copyright (c) 2010-2020 LiosK
+ */
+
+//! moment.js
