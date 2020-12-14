@@ -41,6 +41,7 @@
             {{ isVideoOn ? '关闭摄像头' : '打开摄像头' }}
           </a-button>
           <a-button
+            type="primary"
             size="large"
             @click="toggleAudioStatus"
           >
@@ -86,7 +87,7 @@ export default defineComponent({
       const { username } = userInfo.value
       await toRaw(trtcCalling.value).call({
         userID: values.username,
-        type: TRTCCalling.CALL_TYPE.VIDEO_CALL,
+        type: TRTCCalling.CALL_TYPE.VIDEO_CALL, // 视频通话
         timeout: 30 // 超时30s
       })
       trtcInfoData.callStatus = 'calling'
@@ -188,7 +189,6 @@ export default defineComponent({
 
     onMounted(() => {
       const trtcInfoData = trtcInfo.value
-      console.log(trtcInfoData.callStatus, trtcInfoData.isInviter)
       if (trtcInfoData.callStatus === 'connected' && !trtcInfoData.isInviter) {
         startMeeting()
       }
