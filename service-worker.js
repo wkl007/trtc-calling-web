@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/trtc-calling-web/precache-manifest.d925abffb43bb6388d390dfb687b4b99.js"
+  "/trtc-calling-web/precache-manifest.99d57fbed162b3002f6feda82f839320.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "trtc-calling-web"});

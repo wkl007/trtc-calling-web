@@ -1,7 +1,11 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "ff100a62534ea53dffb4",
+    "revision": "252262557f46cbd5cf67",
     "url": "/trtc-calling-web/css/app.4211315b.css"
+  },
+  {
+    "revision": "073b9a806283f1f4c94e",
+    "url": "/trtc-calling-web/css/audioCall.68398f72.css"
   },
   {
     "revision": "557a7ec541326447aacd",
@@ -16,20 +20,24 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/trtc-calling-web/css/login.3b22faef.css"
   },
   {
-    "revision": "9a709e852db2c8325a9e",
-    "url": "/trtc-calling-web/css/videoCall.24fd625f.css"
+    "revision": "042c1ad0ada626182221",
+    "url": "/trtc-calling-web/css/videoCall.dcae2c3d.css"
   },
   {
-    "revision": "23908b4248f1bafa31422d7ae63a148a",
+    "revision": "026a6f88595c14d339fcfed27a45cfd9",
     "url": "/trtc-calling-web/index.html"
   },
   {
-    "revision": "ff100a62534ea53dffb4",
-    "url": "/trtc-calling-web/js/app.4941a2d3.js"
+    "revision": "252262557f46cbd5cf67",
+    "url": "/trtc-calling-web/js/app.1565f89b.js"
   },
   {
-    "revision": "f653342035f4b5409c5c",
-    "url": "/trtc-calling-web/js/audioCall.b4d9cb7e.js"
+    "revision": "073b9a806283f1f4c94e",
+    "url": "/trtc-calling-web/js/audioCall.d301f22c.js"
+  },
+  {
+    "revision": "d08f3cf8c7c0c4bf97e4",
+    "url": "/trtc-calling-web/js/audioCall~login~videoCall.c683f01d.js"
   },
   {
     "revision": "557a7ec541326447aacd",
@@ -52,12 +60,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/trtc-calling-web/js/login.d4098318.js"
   },
   {
-    "revision": "bcd65c7de12b30329fae",
-    "url": "/trtc-calling-web/js/login~videoCall.2683333d.js"
-  },
-  {
-    "revision": "9a709e852db2c8325a9e",
-    "url": "/trtc-calling-web/js/videoCall.688bd7a7.js"
+    "revision": "042c1ad0ada626182221",
+    "url": "/trtc-calling-web/js/videoCall.4100a115.js"
   },
   {
     "revision": "a038f65e523da91ecef587bd71e9d89e",
