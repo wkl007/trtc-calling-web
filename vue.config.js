@@ -8,7 +8,9 @@ const resolve = dir => path.join(__dirname, dir)
 
 module.exports = {
   // 基本路径
-  publicPath: process.env.NODE_ENV === 'production' ? '/trtc-calling-web/' : '/',
+  publicPath: process.env.NODE_ENV === 'production'
+    ? '/trtc-calling-web/'
+    : '/',
   // 输出文件目录
   outputDir: 'dist',
   // 用于嵌套生成的静态资产（js，css，img，fonts）的目录
@@ -36,18 +38,17 @@ module.exports = {
     // config.name = name
     const plugins = [
       // 忽略moment locale文件
-      new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+      new webpack.IgnorePlugin({
+        resourceRegExp: /^\.\/locale$/,
+        contextRegExp: /moment$/
+      }),
       // 去console
       new TerserPlugin({
         terserOptions: {
-          warnings: false,
           compress: {
-            drop_debugger: true,
             drop_console: true
           }
-        },
-        sourceMap: false,
-        parallel: true
+        }
       }),
       // gzip压缩
       new CompressionWebpackPlugin({
