@@ -58,7 +58,7 @@ yarn build
 
 视频通话
 
-![截屏2020-12-16 上午9.06.55](https://pic-go-1256738511.cos.ap-chengdu.myqcloud.com/images/20201216091058.png)
+![image-20201216093803450](https://pic-go-1256738511.cos.ap-chengdu.myqcloud.com/images/20201216093806.png)
 
 语音通话
 
