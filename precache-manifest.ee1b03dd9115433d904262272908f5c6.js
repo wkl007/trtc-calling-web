@@ -1,14 +1,14 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "252262557f46cbd5cf67",
+    "revision": "150ec876865217f968bd",
     "url": "/trtc-calling-web/css/app.4211315b.css"
   },
   {
-    "revision": "073b9a806283f1f4c94e",
+    "revision": "c871846ce77284612d90",
     "url": "/trtc-calling-web/css/audioCall.68398f72.css"
   },
   {
-    "revision": "12259df476463436f2f7",
+    "revision": "42c14cae50d1093bf9cf",
     "url": "/trtc-calling-web/css/chunk-vendors.c5551dbf.css"
   },
   {
@@ -16,36 +16,36 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/trtc-calling-web/css/home.ea603bb7.css"
   },
   {
-    "revision": "b2663f02be0d096a2b13",
+    "revision": "d38ec2c984ebddea3a0e",
     "url": "/trtc-calling-web/css/login.3b22faef.css"
   },
   {
-    "revision": "042c1ad0ada626182221",
+    "revision": "531364af102d51cdfe04",
     "url": "/trtc-calling-web/css/videoCall.dcae2c3d.css"
   },
   {
-    "revision": "a5e6b2de9fce076efe6621979923cdb7",
+    "revision": "5c147a3d79a293abb1b074f6954a8123",
     "url": "/trtc-calling-web/index.html"
   },
   {
-    "revision": "252262557f46cbd5cf67",
-    "url": "/trtc-calling-web/js/app.1565f89b.js"
+    "revision": "150ec876865217f968bd",
+    "url": "/trtc-calling-web/js/app.a33f16f7.js"
   },
   {
-    "revision": "073b9a806283f1f4c94e",
-    "url": "/trtc-calling-web/js/audioCall.d301f22c.js"
+    "revision": "c871846ce77284612d90",
+    "url": "/trtc-calling-web/js/audioCall.bed6ae89.js"
   },
   {
     "revision": "d08f3cf8c7c0c4bf97e4",
     "url": "/trtc-calling-web/js/audioCall~login~videoCall.c683f01d.js"
   },
   {
-    "revision": "12259df476463436f2f7",
-    "url": "/trtc-calling-web/js/chunk-vendors.e3b9dafa.js"
+    "revision": "42c14cae50d1093bf9cf",
+    "url": "/trtc-calling-web/js/chunk-vendors.26974e62.js"
   },
   {
     "revision": "6a074805afa84060ee20bfdd9edffab8",
-    "url": "/trtc-calling-web/js/chunk-vendors.e3b9dafa.js.LICENSE.txt"
+    "url": "/trtc-calling-web/js/chunk-vendors.26974e62.js.LICENSE.txt"
   },
   {
     "revision": "fa7badc7d2227d44f7d1",
@@ -56,12 +56,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/trtc-calling-web/js/lib-generate-test-usersig.min.js"
   },
   {
-    "revision": "b2663f02be0d096a2b13",
-    "url": "/trtc-calling-web/js/login.d4098318.js"
+    "revision": "d38ec2c984ebddea3a0e",
+    "url": "/trtc-calling-web/js/login.f51fe178.js"
   },
   {
-    "revision": "042c1ad0ada626182221",
-    "url": "/trtc-calling-web/js/videoCall.4100a115.js"
+    "revision": "531364af102d51cdfe04",
+    "url": "/trtc-calling-web/js/videoCall.ee69ae42.js"
   },
   {
     "revision": "a038f65e523da91ecef587bd71e9d89e",
