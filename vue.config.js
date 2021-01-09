@@ -36,18 +36,17 @@ module.exports = {
     // config.name = name
     const plugins = [
       // 忽略moment locale文件
-      new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+      new webpack.IgnorePlugin({
+        resourceRegExp: /^\.\/locale$/,
+        contextRegExp: /moment$/
+      }),
       // 去console
       new TerserPlugin({
         terserOptions: {
-          warnings: false,
           compress: {
-            drop_debugger: true,
             drop_console: true
           }
-        },
-        sourceMap: false,
-        parallel: true
+        }
       }),
       // gzip压缩
       new CompressionWebpackPlugin({
