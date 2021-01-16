@@ -76,7 +76,7 @@ export default defineComponent({
     const images = inject('images')
     const trtcInfo = computed(() => store.getters.trtcInfo)
     const userInfo = computed(() => store.getters.userInfo)
-    const trtcCalling: any = computed(() => store.getters.trtcCalling)
+    const trtcCalling: TRTCCalling = toRaw(computed(() => store.getters.trtcCalling).value)
     const showVideoCall = ref(false) // 显示视频区域
     const isVideoOn = ref(true) // 视频状态
     const isAudioOn = ref(true) // 麦克风状态
@@ -85,7 +85,7 @@ export default defineComponent({
     async function handleCallUser (values: { username: string }) {
       const trtcInfoData = trtcInfo.value
       const { username } = userInfo.value
-      await toRaw(trtcCalling.value).call({
+      await trtcCalling.call({
         userID: values.username,
         type: TRTCCalling.CALL_TYPE.VIDEO_CALL, // 视频通话
         timeout: 30 // 超时30s
@@ -99,7 +99,7 @@ export default defineComponent({
     // 取消呼叫
     async function handleCancelCallUser () {
       const trtcInfoData = trtcInfo.value
-      await toRaw(trtcCalling.value).hangup()
+      await trtcCalling.hangup()
       trtcInfoData.callStatus = 'idle'
       trtcInfoData.meetingUserIdList = []
       trtcInfoData.muteVideoUserIdList = []
@@ -115,7 +115,7 @@ export default defineComponent({
       if (trtcInfoData.meetingUserIdList >= 3) {
         const lastJoinUser = trtcInfoData.meetingUserIdList[trtcInfoData.meetingUserIdList.length - 1]
         nextTick(() => {
-          toRaw(trtcCalling.value).startRemoteView({
+          trtcCalling.startRemoteView({
             userID: lastJoinUser,
             videoViewDomID: `video-${lastJoinUser}`
           })
@@ -124,13 +124,13 @@ export default defineComponent({
       }
       showVideoCall.value = true
       nextTick(() => {
-        toRaw(trtcCalling.value).startLocalView({
+        trtcCalling.startLocalView({
           userID: username,
           videoViewDomID: `video-${username}`
         })
         const otherParticipants = trtcInfoData.meetingUserIdList.filter((item: string) => item !== username)
         otherParticipants.forEach((userID: string) => {
-          toRaw(trtcCalling.value).startRemoteView({
+          trtcCalling.startRemoteView({
             userID,
             videoViewDomID: `video-${userID}`
           })
@@ -141,7 +141,7 @@ export default defineComponent({
     // 挂断会议
     async function handleHangup () {
       const trtcInfoData = trtcInfo.value
-      await toRaw(trtcCalling.value).hangup()
+      await trtcCalling.hangup()
       showVideoCall.value = false
       trtcInfoData.callStatus = 'idle'
       await store.dispatch('setTrtcInfo', trtcInfoData)
@@ -153,10 +153,10 @@ export default defineComponent({
       const { username } = userInfo.value
       isVideoOn.value = !isVideoOn.value
       if (isVideoOn.value) {
-        await toRaw(trtcCalling.value).openCamera()
+        await trtcCalling.openCamera()
         trtcInfoData.muteVideoUserIdList = trtcInfoData.muteVideoUserIdList.filter((item: string) => item !== username)
       } else {
-        await toRaw(trtcCalling.value).closeCamera()
+        await trtcCalling.closeCamera()
         trtcInfoData.muteVideoUserIdList.push(username)
       }
       await store.dispatch('setTrtcInfo', trtcInfoData)
@@ -167,7 +167,7 @@ export default defineComponent({
       const trtcInfoData = trtcInfo.value
       const { username } = userInfo.value
       isAudioOn.value = !isAudioOn.value
-      toRaw(trtcCalling.value).setMicMute(!isAudioOn.value)
+      trtcCalling.setMicMute(!isAudioOn.value)
       if (isAudioOn.value) {
         trtcInfoData.muteAudioUserIdList = trtcInfoData.muteAudioUserIdList.filter((item: string) => item !== username)
       } else {
@@ -199,7 +199,7 @@ export default defineComponent({
       trtcInfoData.muteVideoUserIdList = []
       trtcInfoData.muteAudioUserIdList = []
       if (trtcInfoData.callStatus === 'connected') {
-        toRaw(trtcCalling.value).hangup()
+        trtcCalling.hangup()
         trtcInfoData.callStatus = 'idle'
       }
       store.dispatch('setTrtcInfo', trtcInfoData)

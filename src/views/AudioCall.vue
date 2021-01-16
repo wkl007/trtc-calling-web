@@ -64,7 +64,7 @@ export default defineComponent({
     const images = inject('images')
     const trtcInfo = computed(() => store.getters.trtcInfo)
     const userInfo = computed(() => store.getters.userInfo)
-    const trtcCalling: any = computed(() => store.getters.trtcCalling)
+    const trtcCalling: TRTCCalling = toRaw(computed(() => store.getters.trtcCalling).value)
     const showAudioCall = ref(false) // 显示音频区域
     const isAudioOn = ref(true) // 麦克风状态
 
@@ -72,7 +72,7 @@ export default defineComponent({
     async function handleCallUser (values: { username: string }) {
       const trtcInfoData = trtcInfo.value
       const { username } = userInfo.value
-      await toRaw(trtcCalling.value).call({
+      await trtcCalling.call({
         userID: values.username,
         type: TRTCCalling.CALL_TYPE.AUDIO_CALL, // 语音通话
         timeout: 30 // 超时30s
@@ -86,7 +86,7 @@ export default defineComponent({
     // 取消呼叫
     async function handleCancelCallUser () {
       const trtcInfoData = trtcInfo.value
-      await toRaw(trtcCalling.value).hangup()
+      await trtcCalling.hangup()
       trtcInfoData.callStatus = 'idle'
       trtcInfoData.meetingUserIdList = []
       trtcInfoData.muteVideoUserIdList = []
@@ -102,7 +102,7 @@ export default defineComponent({
     // 挂断会议
     async function handleHangup () {
       const trtcInfoData = trtcInfo.value
-      await toRaw(trtcCalling.value).hangup()
+      await trtcCalling.hangup()
       showAudioCall.value = false
       trtcInfoData.callStatus = 'idle'
       await store.dispatch('setTrtcInfo', trtcInfoData)
@@ -113,7 +113,7 @@ export default defineComponent({
       const trtcInfoData = trtcInfo.value
       const { username } = userInfo.value
       isAudioOn.value = !isAudioOn.value
-      toRaw(trtcCalling.value).setMicMute(!isAudioOn.value)
+      trtcCalling.setMicMute(!isAudioOn.value)
       if (isAudioOn.value) {
         trtcInfoData.muteAudioUserIdList = trtcInfoData.muteAudioUserIdList.filter((item: string) => item !== username)
       } else {
@@ -145,7 +145,7 @@ export default defineComponent({
       trtcInfoData.muteVideoUserIdList = []
       trtcInfoData.muteAudioUserIdList = []
       if (trtcInfoData.callStatus === 'connected') {
-        toRaw(trtcCalling.value).hangup()
+        trtcCalling.hangup()
         trtcInfoData.callStatus = 'idle'
       }
       store.dispatch('setTrtcInfo', trtcInfoData)

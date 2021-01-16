@@ -52,6 +52,7 @@
     "@commitlint/config-conventional": "^11.0.0",
     "@types/good-storage": "^1.1.0",
     "@types/nprogress": "^0.2.0",
+    "@types/trtc-calling-js": "^0.6.0",
     "@typescript-eslint/eslint-plugin": "^4.12.0",
     "@typescript-eslint/parser": "^4.12.0",
     "@vue/cli-plugin-babel": "~5.0.0-alpha.1",

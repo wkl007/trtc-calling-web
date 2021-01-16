@@ -1,5 +1,6 @@
 import type { Commit } from 'vuex'
 import type { SdkInfo, State, TrtcInfo, UserInfo } from '@/types'
+import TRTCCalling from 'trtc-calling-js'
 import * as types from '@/store/mutationTypes'
 
 export interface CommitFunction {
@@ -33,7 +34,7 @@ export function setUserInfo ({ commit }: CommitFunction, userInfo: UserInfo): vo
  * @param commit
  * @param trtcCalling
  */
-export function setTrtcCalling ({ commit }: CommitFunction, trtcCalling: any): void {
+export function setTrtcCalling ({ commit }: CommitFunction, trtcCalling: TRTCCalling): void {
   commit(types.SET_TRTC_CALL, trtcCalling)
 }
 

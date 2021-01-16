@@ -1,4 +1,5 @@
 import type { SdkInfo, State, TrtcInfo, UserInfo } from '@/types'
+import TRTCCalling from 'trtc-calling-js'
 import * as types from './mutationTypes'
 
 const mutations = {
@@ -8,7 +9,7 @@ const mutations = {
   [types.SET_USER_INFO] (state: State, userInfo: UserInfo): void {
     state.userInfo = userInfo
   },
-  [types.SET_TRTC_CALL] (state: State, trtcCalling: any): void {
+  [types.SET_TRTC_CALL] (state: State, trtcCalling: TRTCCalling): void {
     state.trtcCalling = trtcCalling
   },
   [types.SET_TRTC_INFO] (state: State, trtcInfo: TrtcInfo): void {

@@ -1,4 +1,4 @@
-import TRTCCalling from 'trtc-calling-js'
+import TRTCCalling, { InvitedInfo, UserAudioInfo, UserInfo, UserVideoInfo } from 'trtc-calling-js'
 // @ts-ignore
 import * as LibGenerateTestUserSig from '../../public/js/lib-generate-test-usersig.min'
 import { message, Modal } from 'ant-design-vue'
@@ -7,10 +7,10 @@ import router from '@/router'
 
 interface UseTRTC {
   getUserSig: () => { userSig: string },
-  initTRTC: () => { trtcCalling: any },
-  initListener: (trtcCalling: any) => void,
-  removeListener: (trtcCalling: any) => void,
-  handleLogin: (trtcCalling: any) => void
+  initTRTC: () => TRTCCalling,
+  initListener: (trtcCalling: TRTCCalling) => void,
+  removeListener: (trtcCalling: TRTCCalling) => void,
+  handleLogin: (trtcCalling: TRTCCalling) => void
 }
 
 export function useTRTC (): UseTRTC {
@@ -33,11 +33,11 @@ export function useTRTC (): UseTRTC {
   }
 
   // 初始化监听
-  function initListener (trtcCalling: any) {
+  function initListener (trtcCalling: TRTCCalling) {
     if (!trtcCalling) return
     trtcCalling.on(TRTCCalling.EVENT.ERROR, handleError)
-    trtcCalling.on(TRTCCalling.EVENT.INVITED, (e: { sponsor: string; userIDList: string[]; isFromGroup: boolean; inviteData: any; inviteID: string }) => handleInvited(trtcCalling, e))
-    trtcCalling.on(TRTCCalling.EVENT.USER_ENTER, (e: { userID: string }) => handleUserEnter(trtcCalling, e))
+    trtcCalling.on(TRTCCalling.EVENT.INVITED, (e: InvitedInfo) => handleInvited(trtcCalling, e))
+    trtcCalling.on(TRTCCalling.EVENT.USER_ENTER, (e: UserInfo) => handleUserEnter(trtcCalling, e))
     trtcCalling.on(TRTCCalling.EVENT.USER_LEAVE, handleUserLeave)
     trtcCalling.on(TRTCCalling.EVENT.REJECT, handleEject)
     trtcCalling.on(TRTCCalling.EVENT.LINE_BUSY, handleLineBusy)
@@ -51,11 +51,11 @@ export function useTRTC (): UseTRTC {
   }
 
   // 移除监听
-  function removeListener (trtcCalling: any) {
+  function removeListener (trtcCalling: TRTCCalling) {
     if (!trtcCalling) return
     trtcCalling.off(TRTCCalling.EVENT.ERROR, handleError)
-    trtcCalling.off(TRTCCalling.EVENT.INVITED, (e: { sponsor: string; userIDList: string[]; isFromGroup: boolean; inviteData: any; inviteID: string }) => handleInvited(trtcCalling, e))
-    trtcCalling.off(TRTCCalling.EVENT.USER_ENTER, (e: { userID: string }) => handleUserEnter(trtcCalling, e))
+    trtcCalling.off(TRTCCalling.EVENT.INVITED, (e: InvitedInfo) => handleInvited(trtcCalling, e))
+    trtcCalling.off(TRTCCalling.EVENT.USER_ENTER, (e: UserInfo) => handleUserEnter(trtcCalling, e))
     trtcCalling.off(TRTCCalling.EVENT.USER_LEAVE, handleUserLeave)
     trtcCalling.off(TRTCCalling.EVENT.REJECT, handleEject)
     trtcCalling.off(TRTCCalling.EVENT.LINE_BUSY, handleLineBusy)
@@ -69,10 +69,10 @@ export function useTRTC (): UseTRTC {
   }
 
   // 登录
-  async function handleLogin (trtcCalling: any) {
+  async function handleLogin (trtcCalling: TRTCCalling) {
     try {
       const { userInfo: { username } } = store.getters
-      trtcCalling.login({
+      await trtcCalling.login({
         userID: username,
         userSig: getUserSig()
       })
@@ -80,9 +80,9 @@ export function useTRTC (): UseTRTC {
   }
 
   // 退出登录
-  async function handleLogout (trtcCalling: any) {
+  async function handleLogout (trtcCalling: TRTCCalling) {
     try {
-      trtcCalling.logout()
+      await trtcCalling.logout()
       await store.dispatch('setLoginStatus', 0)
       await store.dispatch('setUserInfo', { username: '' })
       await router.push({ path: '/login' })
@@ -94,13 +94,13 @@ export function useTRTC (): UseTRTC {
   }
 
   // 被邀用户收到了邀请通知
-  async function handleInvited (trtcCalling: any, {
+  async function handleInvited (trtcCalling: TRTCCalling, {
     sponsor,
     userIDList,
     isFromGroup,
     inviteData,
     inviteID
-  }: { sponsor: string, userIDList: Array<string>, isFromGroup: boolean, inviteData: any, inviteID: string }) {
+  }: InvitedInfo) {
     try {
       console.log('被邀用户收到了邀请通知')
       const { trtcInfo, userInfo: { username } } = store.getters
@@ -114,7 +114,7 @@ export function useTRTC (): UseTRTC {
       if (sponsor === username) return
       // 考虑忙线的情况
       if (trtcInfo.callStatus === 'calling' || trtcInfo.callStatus === 'connected') {
-        await trtcCalling.reject({ inviteID, isBusy: true })
+        await trtcCalling.reject({ inviteID, isBusy: true, callType: inviteData.callType })
         return
       }
       // 接通会话
@@ -130,11 +130,13 @@ export function useTRTC (): UseTRTC {
         onOk: async () => {
           if (trtcInfo.meetingUserIdList.indexOf(username) < 0) trtcInfo.meetingUserIdList.push(username)
           await store.dispatch('setTrtcInfo', trtcInfo)
-          trtcCalling.accept({
-            inviteID,
-            roomID,
-            callType
-          })
+          if (roomID) {
+            await trtcCalling.accept({
+              inviteID,
+              roomID,
+              callType
+            })
+          }
           if (callType === TRTCCalling.CALL_TYPE.AUDIO_CALL) {
             await router.push({ path: '/audioCall' })
           }
@@ -155,7 +157,7 @@ export function useTRTC (): UseTRTC {
   }
 
   // 用户进入通话
-  async function handleUserEnter (trtcCalling: any, { userID }: { userID: string }) {
+  async function handleUserEnter (trtcCalling: TRTCCalling, { userID }: UserInfo) {
     console.log('用户进入通话')
     const { trtcInfo } = store.getters
     if (trtcInfo.meetingUserIdList.indexOf(userID) < 0) trtcInfo.meetingUserIdList.push(userID)
@@ -167,7 +169,7 @@ export function useTRTC (): UseTRTC {
       // 第n (n >= 3)个人被邀请入会, 并且他不是第 n 个人的邀请人
       // 需要先等远程用户 id 的节点渲染到 dom 上
       // TODO
-      trtcCalling.startRemoteView({
+      await trtcCalling.startRemoteView({
         userID,
         videoViewDomID: `video-${userID}`
       })
@@ -176,7 +178,7 @@ export function useTRTC (): UseTRTC {
   }
 
   // 用户离开会话
-  async function handleUserLeave ({ userID }: { userID: string }) {
+  async function handleUserLeave ({ userID }: UserInfo) {
     console.log('用户离开会话')
     const { trtcInfo } = store.getters
     if (trtcInfo.meetingUserIdList.length === 2) trtcInfo.callStatus = 'idle'
@@ -186,14 +188,14 @@ export function useTRTC (): UseTRTC {
   }
 
   // 被邀用户拒绝通话
-  async function handleEject ({ userID }: { userID: string }) {
+  async function handleEject ({ userID }: UserInfo) {
     console.log('被邀用户拒绝通话')
     message.info(`${userID}拒绝通话`)
     await dissolveMeeting()
   }
 
   // 被邀用户正在通话中，忙线
-  async function handleLineBusy ({ userID }: { userID: string }) {
+  async function handleLineBusy ({ userID }: UserInfo) {
     console.log('被邀用户正在通话中，忙线')
     message.info(`${userID}忙线`)
     await dissolveMeeting()
@@ -207,7 +209,7 @@ export function useTRTC (): UseTRTC {
   }
 
   // 重复登录，被踢出
-  async function handleKickedOut (trtcCalling: any) {
+  async function handleKickedOut (trtcCalling: TRTCCalling) {
     console.log('重复登录，被踢出')
     message.info('重复登录，被踢出')
     // await handleLogout(trtcCalling)
@@ -221,14 +223,14 @@ export function useTRTC (): UseTRTC {
   }
 
   // 被邀用户超时无应答
-  async function handleNoResp ({ userID }: { userID: string }) {
+  async function handleNoResp ({ userID }: UserInfo) {
     console.log('被邀用户超时无应答')
     message.info(`${userID || '被邀用户'}无应答`)
     await dissolveMeeting()
   }
 
   // 本次通话结束
-  async function handleCallEnd (trtcCalling: any) {
+  async function handleCallEnd (trtcCalling: TRTCCalling) {
     console.log('通话已结束')
     message.info('通话已结束')
     trtcCalling.hangup()
@@ -236,7 +238,7 @@ export function useTRTC (): UseTRTC {
   }
 
   // 远端用户开启/关闭了摄像头
-  async function handleUserVideoChange ({ userID, isVideoAvailable }: { userID: string, isVideoAvailable: boolean }) {
+  async function handleUserVideoChange ({ userID, isVideoAvailable }: UserVideoInfo) {
     console.log('远端用户开启/关闭了摄像头')
     const { trtcInfo } = store.getters
     if (isVideoAvailable) {
@@ -248,7 +250,7 @@ export function useTRTC (): UseTRTC {
   }
 
   // 远端用户开启/关闭了麦克风
-  async function handleUserAudioChange ({ userID, isAudioAvailable }: { userID: string, isAudioAvailable: boolean }) {
+  async function handleUserAudioChange ({ userID, isAudioAvailable }: UserAudioInfo) {
     console.log('远端用户开启/关闭了麦克风')
     const { trtcInfo } = store.getters
     if (isAudioAvailable) {

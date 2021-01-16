@@ -1547,6 +1547,11 @@
   resolved "https://registry.npm.taobao.org/@types/tapable/download/@types/tapable-1.0.6.tgz?cache=0&sync_timestamp=1605057331478&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Ftapable%2Fdownload%2F%40types%2Ftapable-1.0.6.tgz#a9ca4b70a18b270ccb2bc0aaafefd1d486b7ea74"
   integrity sha1-qcpLcKGLJwzLK8Cqr+/R1Ia36nQ=
 
+"@types/trtc-calling-js@^0.6.0":
+  version "0.6.0"
+  resolved "https://registry.npm.taobao.org/@types/trtc-calling-js/download/@types/trtc-calling-js-0.6.0.tgz#d619b9dba5920c9a90a12a7728fa577f1faea582"
+  integrity sha1-1hm526WSDJqQoSp3KPpXfx+upYI=
+
 "@types/uglify-js@*":
   version "3.11.1"
   resolved "https://registry.npm.taobao.org/@types/uglify-js/download/@types/uglify-js-3.11.1.tgz?cache=0&sync_timestamp=1605057452755&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fuglify-js%2Fdownload%2F%40types%2Fuglify-js-3.11.1.tgz#97ff30e61a0aa6876c270b5f538737e2d6ab8ceb"
