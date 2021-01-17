@@ -10,6 +10,7 @@
 <script lang="ts">
 import { computed, defineComponent, provide, reactive, toRaw, watch } from 'vue'
 import { useStore } from 'vuex'
+import TRTCCalling from 'trtc-calling-js'
 import zhCN from 'ant-design-vue/es/locale/zh_CN'
 import VNav from '@/components/VNav.vue'
 import images from '@/assets/images'
@@ -24,15 +25,15 @@ export default defineComponent({
     const { initListener, removeListener } = useTRTC()
     const store = useStore()
     const loginStatus = computed(() => store.getters.loginStatus)
-    const trtcCalling = computed(() => store.getters.trtcCalling)
+    const trtcCalling: TRTCCalling = toRaw(computed(() => store.getters.trtcCalling).value)
 
     watch(loginStatus, (val, oldVal) => {
       if (val) {
         // 登录成功监听
-        initListener(toRaw(trtcCalling.value))
+        initListener(trtcCalling)
       } else {
         // 取消登录移除监听
-        removeListener(toRaw(trtcCalling.value))
+        removeListener(trtcCalling)
       }
     })
 
