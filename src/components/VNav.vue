@@ -62,7 +62,7 @@ export default defineComponent({
     const router = useRouter()
     const store = useStore()
     const userInfo = computed(() => store.getters.userInfo)
-    const trtcCalling: any = computed(() => store.getters.trtcCalling)
+    const trtcCalling = computed(() => store.getters.trtcCalling)
 
     // 菜单点击
     function handleMenuClick ({ key }: { key: string }): void {
